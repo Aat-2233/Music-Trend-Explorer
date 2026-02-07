@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ artist.name }} - Music Trend Explorer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='artist_detail.css') }}">
+</head>
+
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="{{ url_for('home') }}" class="nav-link">🏠 Home</a>
+            <span class="nav-divider">|</span>
+            <a href="{{ url_for('artist_search') }}" class="nav-link">🎤 Artists</a>
+            <span class="nav-divider">|</span>
+            <a href="{{ url_for('predict') }}" class="nav-link">📈 Predict</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Back Button -->
+        <a href="{{ url_for('artist_search') }}" class="back-button">
+            <span class="back-icon">←</span> Back to Artists
+        </a>
+
+        <!-- Hero Section -->
+        <div class="hero-section">
+            <div class="hero-content">
+                <div class="artist-avatar">
+                    <span class="avatar-emoji">🎵</span>
+                </div>
+                <h1 class="artist-title">{{ artist.name }}</h1>
+                <p class="artist-subtitle">Music Artist Profile</p>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="detail-grid">
+            <!-- Left Column - Key Stats -->
+            <div class="stats-panel">
+                <h2 class="panel-title">Key Statistics</h2>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">👥</div>
+                    <div class="stat-content">
+                        <span class="stat-label">Followers</span>
+                        <span class="stat-value animated-number" data-value="{{ artist.followers }}">
+                            {{ "{:,}".format(artist.followers) }}
+                        </span>
+                        <span class="stat-unit">total followers</span>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">⭐</div>
+                    <div class="stat-content">
+                        <span class="stat-label">Popularity Score</span>
+                        <span class="stat-value">{{ artist.popularity }}</span>
+                        <div class="popularity-bar">
+                            <div class="popularity-fill" data-width="{{ artist.popularity }}"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stat-card highlight">
+                    <div class="stat-icon">🎼</div>
+                    <div class="stat-content">
+                        <span class="stat-label">Total Genres</span>
+                        <span class="stat-value">{{ artist.genres|length }}</span>
+                        <span class="stat-unit">musical styles</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column - Genres -->
+            <div class="genres-panel">
+                <h2 class="panel-title">Musical Genres</h2>
+                
+                <div class="genres-showcase">
+                    {% if artist.genres %}
+                        {% for genre in artist.genres %}
+                            <div class="genre-badge" data-delay="{{ loop.index0 }}">
+                                <span class="genre-icon">🎸</span>
+                                <span class="genre-name">{{ genre }}</span>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="no-genres">No genres available</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Additional Info Section -->
+        <div class="info-section">
+            <div class="info-card">
+                <h3 class="info-title">About This Artist</h3>
+                <div class="info-content">
+                    <p>
+                        <strong>{{ artist.name }}</strong> is featured in our music trend database with 
+                        <strong>{{ "{:,}".format(artist.followers) }}</strong> followers on Spotify.
+                    </p>
+                    <p>
+                        With a popularity score of <strong>{{ artist.popularity }}/100</strong>, 
+                        this artist is known for their work in 
+                        <strong>{{ artist.genres[:3]|join(', ') if artist.genres else 'various' }}</strong> genres.
+                    </p>
+                </div>
+            </div>
+
+            <div class="info-card">
+                <h3 class="info-title">Quick Facts</h3>
+                <ul class="facts-list">
+                    <li>
+                        <span class="fact-icon">📊</span>
+                        <span>{{ "Very Popular" if artist.popularity >= 80 else "Popular" if artist.popularity >= 60 else "Emerging" }} artist</span>
+                    </li>
+                    <li>
+                        <span class="fact-icon">🌍</span>
+                        <span>Followers across multiple continents</span>
+                    </li>
+                    <li>
+                        <span class="fact-icon">🎭</span>
+                        <span>Versatile artist with {{ artist.genres|length }} different genre(s)</span>
+                    </li>
+                    <li>
+                        <span class="fact-icon">🎯</span>
+                        <span>Part of our trending artists database</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Call to Action -->
+        <div class="cta-section">
+            <h3>Want to explore more artists?</h3>
+            <div class="cta-buttons">
+                <a href="{{ url_for('artist_search') }}" class="cta-btn primary">🔍 Search More Artists</a>
+                <a href="{{ url_for('home') }}" class="cta-btn secondary">📊 View Trends</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='artist_detail.js') }}"></script>
+</body>
+</html>

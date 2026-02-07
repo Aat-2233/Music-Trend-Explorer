@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Artist Trends Explorer - A Fresh Look</title>
+     <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
+</head>
+<body>
+     <script src="{{ url_for('static', filename='index.js') }}"></script>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/artist" class="nav-link">🎤 Artist Search</a>
+            <span class="nav-divider">|</span>
+            <a href="/predict" class="nav-link">📈 Popularity Prediction</a>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container">
+        <header class="header">
+            <h1 class="main-title">🎵 Music Trends Explorer Dashboard</h1>
+            <p class="subtitle">Discover insights about music trends and artist popularity</p>
+        </header>
+
+        <!-- Charts Grid -->
+        <div class="charts-grid">
+            <!-- Chart 1 -->
+            <div class="chart-card">
+                <div class="card-header">
+                    <h2 class="card-title">Followers vs Popularity</h2>
+                    <button class="expand-btn" onclick="toggleFullscreen(this)">⛶</button>
+                </div>
+                <div class="card-body">
+                    <img src="/static/followers_vs_popularity.png" alt="Followers vs Popularity Chart" class="chart-image" loading="lazy">
+                </div>
+            </div>
+
+            <!-- Chart 2 -->
+            <div class="chart-card">
+                <div class="card-header">
+                    <h2 class="card-title">Top 10 Most Followed Artists</h2>
+                    <button class="expand-btn" onclick="toggleFullscreen(this)">⛶</button>
+                </div>
+                <div class="card-body">
+                    <img src="/static/top_10_artists.png" alt="Top 10 Most Followed Artists Chart" class="chart-image" loading="lazy">
+                </div>
+            </div>
+
+            <!-- Chart 3 -->
+            <div class="chart-card">
+                <div class="card-header">
+                    <h2 class="card-title">Top 10 Spotify Genres</h2>
+                    <button class="expand-btn" onclick="toggleFullscreen(this)">⛶</button>
+                </div>
+                <div class="card-body">
+                    <img src="/static/top_genres.png" alt="Top 10 Spotify Genres Chart" class="chart-image" loading="lazy">
+                </div>
+            </div>
+
+            <!-- Chart 4 -->
+            <div class="chart-card">
+                <div class="card-header">
+                    <h2 class="card-title">Top Genres by Average Popularity</h2>
+                    <button class="expand-btn" onclick="toggleFullscreen(this)">⛶</button>
+                </div>
+                <div class="card-body">
+                    <img src="/static/genre_popularity.png" alt="Top Genres by Average Popularity Chart" class="chart-image" loading="lazy">
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>&copy; 2026 Music Trends Explorer </p>
+        </footer>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="spinner"></div>
+    </div>
+
+ 
+</body>
+</html>

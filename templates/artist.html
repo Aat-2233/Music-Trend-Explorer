@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Artist Search - Music Trend Explorer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='artist.css') }}">
+</head>
+
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="{{ url_for('home') }}" class="nav-link">🏠 Home</a>
+            <span class="nav-divider">|</span>
+            <a href="{{ url_for('artist_search') }}" class="nav-link">🎤 Artists</a>
+            <span class="nav-divider">|</span>
+            <a href="{{ url_for('predict') }}" class="nav-link">📈 Predict</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Header Section -->
+        <div class="header-section">
+            <h1 class="page-title">🎤 Discover Artists</h1>
+            <p class="subtitle">Search and explore your favorite artists' statistics</p>
+        </div>
+
+        <!-- Search Form Section -->
+        <div class="search-section">
+            <form method="POST" class="search-form" id="artistForm">
+                <div class="search-input-group">
+                    <input 
+                        type="text" 
+                        name="artist_name" 
+                        placeholder="Search by artist name..." 
+                        required
+                        class="search-input"
+                        id="artistInput"
+                    >
+                    <button type="submit" class="search-btn">
+                        <span>🔍 Search</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Error Message -->
+        {% if error %}
+            <div class="error-message">
+                <span class="error-icon">⚠️</span>
+                <div>
+                    <strong>No Results Found</strong>
+                    <p>{{ error }}</p>
+                </div>
+            </div>
+        {% endif %}
+
+        <!-- Results Section -->
+        {% if artists is not none %}
+            <div class="results-section">
+                <h2 class="results-title">
+                    <span class="result-count">{{ artists|length }}</span> Matching Artist(s)
+                </h2>
+                
+                <div class="artists-grid">
+                    {% for _, artist in artists.iterrows() %}
+                        <div class="artist-card">
+                            <div class="artist-card-header">
+                                <h3 class="artist-name">{{ artist['name'] }}</h3>
+                                <span class="popularity-badge">⭐ {{ artist['popularity'] }}</span>
+                            </div>
+                            
+                            <div class="artist-stats">
+                                <div class="stat">
+                                    <span class="stat-label">Followers</span>
+                                    <span class="stat-value">{{ "{:,}".format(artist['followers']|int) }}</span>
+                                </div>
+                                <div class="stat-divider"></div>
+                                <div class="stat">
+                                    <span class="stat-label">Genres</span>
+                                    <div class="genres-list">
+                                        {% for genre in artist['genres'][:3] %}
+                                            <span class="genre-tag">{{ genre }}</span>
+                                        {% endfor %}
+                                        {% if artist['genres']|length > 3 %}
+                                            <span class="genre-tag more">+{{ artist['genres']|length - 3 }}</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <a href="{{ url_for('artist_detail', artist_name=artist['name']) }}" class="artist-link">
+                                View Details →
+                            </a>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <div class="empty-icon">🎵</div>
+                <h3>Start Searching</h3>
+                <p>Enter an artist name to explore their statistics and details</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <script src="{{ url_for('static', filename='artist.js') }}"></script>
+</body>
+</html>

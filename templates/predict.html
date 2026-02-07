@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Popularity Predictor - Music Trend Explorer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='predict.css') }}">
+</head>
+
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="{{ url_for('home') }}" class="nav-link">🏠 Home</a>
+            <span class="nav-divider">|</span>
+            <a href="{{ url_for('artist_search') }}" class="nav-link">🎤 Artists</a>
+            <span class="nav-divider">|</span>
+            <a href="{{ url_for('predict') }}" class="nav-link">📈 Predict</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Header Section -->
+        <div class="predict-header">
+            <div class="header-icon">📈</div>
+            <h1 class="header-title">Popularity Predictor</h1>
+            <p class="header-subtitle">Predict artist popularity based on follower count</p>
+        </div>
+
+        <!-- Main Content Grid -->
+        <div class="predict-grid">
+            <!-- Prediction Form Section -->
+            <div class="form-section">
+                <h2 class="section-title">Make a Prediction</h2>
+                
+                <form method="POST" class="prediction-form" id="predictForm">
+                    <div class="form-group">
+                        <label for="followers" class="form-label">
+                            <span class="label-icon">👥</span>
+                            Follower Count
+                        </label>
+                        <div class="input-wrapper">
+                            <input 
+                                type="number" 
+                                id="followers"
+                                name="followers" 
+                                placeholder="Enter follower count..." 
+                                required
+                                min="0"
+                                step="1000"
+                                class="form-input"
+                            >
+                            <span class="input-hint">e.g., 1000000 for 1 million followers</span>
+                        </div>
+                    </div>
+
+                    <div class="range-slider-group">
+                        <label class="form-label">
+                            <span class="label-icon">📊</span>
+                            Or use the slider
+                        </label>
+                        <input 
+                            type="range" 
+                            id="followerSlider"
+                            min="0" 
+                            max="10000000" 
+                            step="100000"
+                            value="1000000"
+                            class="range-slider"
+                        >
+                        <div class="slider-info">
+                            <span class="slider-label">Selected:</span>
+                            <span class="slider-value" id="sliderValue">1,000,000</span>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="predict-btn">
+                        <span class="btn-icon">✨</span>
+                        <span>Predict Popularity</span>
+                    </button>
+                </form>
+
+                <!-- Info Cards -->
+                <div class="info-cards">
+                    <div class="info-card">
+                        <span class="info-icon">💡</span>
+                        <h4>How it works</h4>
+                        <p>Our ML model analyzes the relationship between followers and popularity to make predictions.</p>
+                    </div>
+                    <div class="info-card">
+                        <span class="info-icon">📊</span>
+                        <h4>Model Accuracy</h4>
+                        <p>Model R² Score: <strong>{{ r2 | round(3) }}</strong></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results Section -->
+            <div class="results-section">
+                {% if prediction %}
+                    <div class="result-card" id="resultCard">
+                        <div class="result-header">
+                            <h2 class="result-title">Prediction Result</h2>
+                            <span class="result-icon">🎯</span>
+                        </div>
+
+                        <div class="prediction-display">
+                            <div class="prediction-value-container">
+                                <span class="prediction-label">Predicted Popularity Score</span>
+                                <span class="prediction-value" id="predictionValue">{{ prediction | round(2) }}</span>
+                                <div class="popularity-gauge">
+                                    <div class="gauge-fill" data-value="{{ prediction | round(2) }}"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="result-details">
+                            <div class="detail-item">
+                                <span class="detail-label">Followers Input:</span>
+                                <span class="detail-value" id="followerInput">{{ followers | default(0) }}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Popularity Score:</span>
+                                <span class="detail-value">{{ prediction | round(2) }} / 100</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Score Status:</span>
+                                <span class="detail-value score-status" id="scoreStatus">
+                                    {% if prediction >= 80 %}
+                                        🔥 Very High
+                                    {% elif prediction >= 60 %}
+                                        ⭐ High
+                                    {% elif prediction >= 40 %}
+                                        👍 Moderate
+                                    {% else %}
+                                        📈 Emerging
+                                    {% endif %}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="confidence-section">
+                            <h4 class="confidence-title">Model Information</h4>
+                            <p class="confidence-text">
+                                R² Score: <strong>{{ r2 | round(3) }}</strong>
+                            </p>
+                            <p class="confidence-disclaimer">
+                                ⓘ This prediction is based on historical data patterns. Actual popularity may vary.
+                            </p>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="empty-results">
+                        <div class="empty-icon">🔮</div>
+                        <h3>No Prediction Yet</h3>
+                        <p>Enter a follower count and click "Predict Popularity" to see the results</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Additional Information Section -->
+        <div class="information-section">
+            <h2 class="section-title">How Popularity is Calculated</h2>
+            
+            <div class="explanation-cards">
+                <div class="explanation-card">
+                    <div class="card-number">01</div>
+                    <h3>Data Collection</h3>
+                    <p>We gathered data from thousands of artists including their follower counts and popularity scores from Spotify.</p>
+                </div>
+
+                <div class="explanation-card">
+                    <div class="card-number">02</div>
+                    <h3>Pattern Recognition</h3>
+                    <p>Our machine learning model identifies patterns between follower counts and popularity to build predictive relationships.</p>
+                </div>
+
+                <div class="explanation-card">
+                    <div class="card-number">03</div>
+                    <h3>Prediction</h3>
+                    <p>Based on these patterns, we can predict an artist's potential popularity score given their follower count.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Links -->
+        <div class="cta-section">
+            <h3>Ready to explore more?</h3>
+            <div class="cta-buttons">
+                <a href="{{ url_for('artist_search') }}" class="cta-btn primary">🔍 Search Artists</a>
+                <a href="{{ url_for('home') }}" class="cta-btn secondary">📊 View Trends</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='predict.js') }}"></script>
+</body>
+</html>
