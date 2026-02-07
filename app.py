@@ -17,7 +17,8 @@ app = Flask(__name__)
 
 
 # Load dataset
-df = pd.read_csv("C:/Users/aatreyee/Desktop/Music trend explorer/data/artists.csv")
+df = pd.read_csv("data/artists.csv")
+
 # Remove rows with missing critical values
 df = df.dropna(subset=['followers', 'name'])
 # Convert genres from string to list
