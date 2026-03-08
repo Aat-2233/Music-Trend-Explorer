@@ -2,7 +2,8 @@ from flask import Flask, render_template, request
 import pandas as pd
 import numpy as np
 import pickle
-import matplotlib.pyplot as plt
+
+
 import ast
 
 app = Flask(__name__)
