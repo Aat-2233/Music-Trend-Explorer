@@ -8,11 +8,15 @@ import ast
 
 app = Flask(__name__)
 
-# Load dataset
-df = pd.read_csv("data/artists.csv")
+# Load dataset - only needed columns to save memory
+df = pd.read_csv("data/artists.csv", usecols=["name", "followers", "popularity", "genres"])
 
 # REMOVE MISSING VALUES
 df = df.dropna(subset=["followers", "popularity"])
+
+# Downcast to reduce memory
+df["followers"] = pd.to_numeric(df["followers"], downcast="integer")
+df["popularity"] = pd.to_numeric(df["popularity"], downcast="integer")
 
 # Create log feature
 df["log_followers"] = np.log1p(df["followers"])
